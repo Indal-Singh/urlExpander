@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>URL Expander</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.10/clipboard.min.js"></script>
+</head>
+
+<body class="bg-white dark:bg-slate-800 dark:text-white">
+  <h1 class="my-5 text-gray-900 text-6xl text-center dark:text-white">URL Expander</h1>
+  <div id="flash-message" class="fixed text-center top-0 left-0 right-0 bg-red-500 text-white p-4 text-center hidden">
+    <%= error %>
+  </div>
+  <form class="max-w-lg mx-3" action="/expand" method="post">
+    <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter you urls</label>
+    <textarea id="shortUrl" name="url" rows="4"
+      class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      placeholder="http://bit.ly/iiLcUI" required></textarea>
+    <button type="submit"
+      class="mt-3 w-full focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Expand</button>
+  </form>
+  <div class="max-w-full mx-3 bg-gray-50 dark:bg-gray-700 bg-white shadow-md rounded p-4 mb-4">
+    <div class="flex items-center justify-between mb-2">
+      <h2 class="text-lg font-semibold">URLs</h2>
+    </div>
+    <% if(locals.urls) {%>
+      <ul class="list-disc pl-6">
+        <% for (let key in urls) {%>
+          <li class="flex items-center mb-2">
+            <span class="mr-2 truncate mr-3"><%=urls[key]['ogu']%></span>
+            <a class="truncate text underline-offset-2 text-orange-700 dark:text-fuchsia-200"
+              href="<%=urls[key]['exu'] %>"><%=urls[key]['exu'] %></a>
+              <button class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 focus:outline-none copy-button"
+                data-clipboard-text="<%=urls[key]['exu'] %>">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                  class="h-4 w-4">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+          </li>
+          <%};%>
+      </ul>
+      <% } %>
+  </div>
+</body>
+<script>
+  // Show flash message for 5 seconds and then hide it
+  const flashMessage = document.getElementById('flash-message');
+  if (flashMessage.textContent.trim() !== '') {
+    flashMessage.classList.remove('hidden');
+    setTimeout(() => {
+      flashMessage.classList.add('hidden');
+    }, 2000);
+  }
+
+  // Initialize Clipboard.js for each copy button
+  document.querySelectorAll('.copy-button').forEach(function (button) {
+    new ClipboardJS(button);
+
+    // Add an event listener to show a message when the text is copied
+    button.addEventListener('click', function () {
+      alert('URL copied to clipboard!');
+    });
+  });
+</script>
+
+</html>
